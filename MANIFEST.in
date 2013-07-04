@@ -1,0 +1,2 @@
+exclude th_evernote/local_settings.py
+include *.txt
