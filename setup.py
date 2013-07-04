@@ -19,7 +19,7 @@ setup(
     author='Olivier Demah',
     author_email='olivier@foxmask.info',
     url='https://github.com/foxmask/django-th-evernote',
-    download_url="https://github.com/foxmask/django-th/archive/trigger-happy-evernote-"
+    download_url="https://github.com/foxmask/django-th-evernote/archive/trigger-happy-evernote-"
     + version + ".zip",
     packages=find_packages(exclude=['th_evernote/local_settings']),
     classifiers=[
