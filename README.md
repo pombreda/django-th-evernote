@@ -51,10 +51,12 @@ TH_SERVICES = (
 Wizard Template :
 
 #### TH_WIZARD_TPL
+```python
 TH_WIZARD_TPL = {
     'my_evernote':
     'my_evernote/evernote-form.html',
 }
+```
 
 ##### TH_EVERNOTE
 TH_EVERNOTE is the settings you will need to be able to add/read data in/from Evernote.
