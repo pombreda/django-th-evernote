@@ -38,6 +38,11 @@ Important parts are the settings of the available services :
 #### INSTALLED_APPS
 
 add the module th_evernote to INSTALLED_APPS
+```python
+INSTALLED_APPS = (
+    'th_evernote',
+)
+```
 
 #### TH_SERVICES 
 
