@@ -1,2 +1,3 @@
 exclude th_evernote/local_settings.py
 include *.txt
+include th_evernote/templates/evernote/*
