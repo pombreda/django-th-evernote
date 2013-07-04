@@ -41,7 +41,7 @@ add the module th_evernote to INSTALLED_APPS
 
 #### TH_SERVICES 
 
-TH_SERVICES is a list of the services we put in django_th/services directory
+TH_SERVICES is a list of the services we add to Django Trigger Happy
 
 ```python
 TH_SERVICES = (
