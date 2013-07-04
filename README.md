@@ -48,9 +48,8 @@ TH_SERVICES = (
     'th_evernote.my_evernote.ServiceEvernote',
 )
 ```
-Wizard Template :
 
-#### TH_WIZARD_TPL
+#### Wizard Template : TH_WIZARD_TPL
 ```python
 TH_WIZARD_TPL = {
     'my_evernote':
