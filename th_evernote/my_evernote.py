@@ -38,8 +38,11 @@ class ServiceEvernote(ServicesMgr):
     def save_data(self, token, title, content, trigger_id, extra):
         """
             let's save the data
+            dont want to handle empty title nor content
+            otherwise this will produce an Exception by 
+            the Evernote's API
         """
-        if token:
+        if token and len(content) > 0 and len(title):
             # get the evernote data of this trigger
             trigger = Evernote.objects.get(trigger_id=trigger_id)
 
