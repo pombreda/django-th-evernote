@@ -8,7 +8,7 @@ for example a new RSS item is published, django-th-evernote will store them by c
 
 Requirements :
 ==============
-* django_th 0.5.0
+* django_th 0.6.0
 * evernote 1.23.2
 * httplib2 0.8
 * oauth2 1.5.211
