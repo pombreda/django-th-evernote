@@ -9,9 +9,15 @@ class EvernoteForm(forms.ModelForm):
     """
         for to handle Evernote service
     """
-    my_form_is = forms.CharField(widget=forms.HiddenInput(),
-                                 initial='evernote')
-
+        
     class Meta:
         model = Evernote
-        fields = ('tag', 'notebook', 'my_form_is')
+        fields = ('tag', 'notebook', )
+
+
+class EvernoteConsummerForm(EvernoteForm):
+    pass
+
+
+class EvernoteProviderForm(EvernoteForm):
+    pass
