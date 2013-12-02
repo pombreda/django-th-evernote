@@ -35,14 +35,20 @@ logger = getLogger('django_th.trigger_happy')
 
 class ServiceEvernote(ServicesMgr):
 
-    def save_data(self, token, title, content, trigger_id, extra):
+    def save_data(self, token, trigger_id, **data):
         """
             let's save the data
             dont want to handle empty title nor content
             otherwise this will produce an Exception by 
             the Evernote's API
         """
-        if token and len(content) > 0 and len(title):
+        if 'content' in data:
+            content = data.content[0].value
+        elif 'description' in data:
+            content = data.description
+        else:
+            content = 'unknown'
+        if token and len(content) > 0 and len(data['title']):
             # get the evernote data of this trigger
             trigger = Evernote.objects.get(trigger_id=trigger_id)
 
@@ -87,17 +93,17 @@ class ServiceEvernote(ServicesMgr):
                     tagGuid = note_store.createTag(new_tag).guid
 
                 if trigger.tag is not '':
-                    #set the tag to the note if a tag has been provided
+                    # set the tag to the note if a tag has been provided
                     note.tagGuids = [tagGuid]
 
                 logger.debug("notebook that will be used %s", trigger.notebook)
 
-            if 'link' in extra:
+            if 'link' in data:
                 # add the link of the 'source' in the note
                 # get a NoteAttributes object
                 na = Types.NoteAttributes()
                 # add the url
-                na.sourceURL = extra['link']
+                na.sourceURL = data['link']
                 # add the object to the note
                 note.attributes = na
 
@@ -108,12 +114,12 @@ class ServiceEvernote(ServicesMgr):
                 provided_from = _('from')
                 footer = "<br/><br/>{} <em>{}</em> {} <a href='{}'>{}</a>".format(
                     provided_by, trigger.trigger.description,
-                    provided_from, extra['link'], extra['link'])
+                    provided_from, data['link'], data['link'])
                 content += footer
 
             # start to build the "note"
             # the title
-            note.title = title.encode('utf-8', 'xmlcharrefreplace')
+            note.title = data['title'].encode('utf-8', 'xmlcharrefreplace')
             # the body
             note.content = '<?xml version="1.0" encoding="UTF-8"?>'
             note.content += '<!DOCTYPE en-note SYSTEM "http://xml.evernote.com/pub/enml2.dtd">'
@@ -127,7 +133,7 @@ class ServiceEvernote(ServicesMgr):
 
         else:
             logger.critical(
-                "no token provided for trigger ID %s and title %s", trigger_id, title)
+                "no token provided for trigger ID %s and title %s", trigger_id, data['title'])
 
     def get_evernote_client(self, token=None):
         """
