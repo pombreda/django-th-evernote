@@ -36,12 +36,15 @@ logger = getLogger('django_th.trigger_happy')
 class ServiceEvernote(ServicesMgr):
 
     def process_data(self, **kwargs):
+        """
+            get the data from the service
+        """
         # todo :
         # get a list of note from the last time we triggered
         # the action
         pass
 
-    def save_data(self, token, trigger_id, published, **data):
+    def save_data(self, token, trigger_id, **data):
         """
             let's save the data
             dont want to handle empty title nor content
