@@ -35,20 +35,27 @@ logger = getLogger('django_th.trigger_happy')
 
 class ServiceEvernote(ServicesMgr):
 
-    def save_data(self, token, trigger_id, **data):
+    def process_data(self, **kwargs):
+        # todo :
+        # get a list of note from the last time we triggered
+        # the action
+        pass
+
+    def save_data(self, token, trigger_id, published, **data):
         """
             let's save the data
             dont want to handle empty title nor content
             otherwise this will produce an Exception by 
             the Evernote's API
         """
+        content = ''
+
         if 'content' in data:
             content = data.content[0].value
         elif 'description' in data:
             content = data.description
-        else:
-            content = 'unknown'
-        if token and len(content) > 0 and len(data['title']):
+
+        if token and len(data['title']):
             # get the evernote data of this trigger
             trigger = Evernote.objects.get(trigger_id=trigger_id)
 
@@ -133,7 +140,8 @@ class ServiceEvernote(ServicesMgr):
 
         else:
             logger.critical(
-                "no token provided for trigger ID %s and title %s", trigger_id, data['title'])
+                "no token provided for trigger ID %s and title %s", trigger_id,
+                data['title'])
 
     def get_evernote_client(self, token=None):
         """
