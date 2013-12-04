@@ -5,8 +5,7 @@ from django.utils.translation import ugettext as _
 
 # django_th classes
 from django_th.services.services import ServicesMgr
-from django_th.models import UserService
-from django_th.models import ServicesActivated
+from django_th.models import UserService, ServicesActivated, TriggerService
 from th_evernote.models import Evernote
 from th_evernote.sanitize import sanitize
 # evernote classes
@@ -35,14 +34,24 @@ logger = getLogger('django_th.trigger_happy')
 
 class ServiceEvernote(ServicesMgr):
 
-    def process_data(self, **kwargs):
+    def process_data(self, trigger_id):
         """
             get the data from the service
         """
-        # todo :
-        # get a list of note from the last time we triggered
-        # the action
-        pass
+        trigger = TriggerService.objects.get(id=trigger_id)
+
+        data = {}
+
+        if trigger.token is not None:
+            client = EvernoteClient(
+                token=trigger.token, sandbox=settings.TH_EVERNOTE['sandbox'])
+
+            # get the data from the last time the trigger has been started
+            # the filter will use the DateTime format in standard
+            data = client.findNotesMetadata(
+                filter='created:' + trigger.date_triggered)
+
+        return data
 
     def save_data(self, token, trigger_id, **data):
         """
