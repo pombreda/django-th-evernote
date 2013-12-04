@@ -10,13 +10,15 @@ from th_evernote.models import Evernote
 from th_evernote.sanitize import sanitize
 # evernote classes
 from evernote.api.client import EvernoteClient
+from evernote.edam.notestore.ttypes import NoteMetadata
 import evernote.edam.type.ttypes as Types
 # django classes
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.utils.log import getLogger
 
-
+import datetime
+import time
 """
     handle process with evernote
     put the following in settings.py
@@ -38,18 +40,24 @@ class ServiceEvernote(ServicesMgr):
         """
             get the data from the service
         """
+
         trigger = TriggerService.objects.get(id=trigger_id)
+
+        date_triggered = int(time.mktime(
+            datetime.datetime.timetuple(trigger.date_triggered)))
 
         data = {}
 
-        if trigger.token is not None:
+        if trigger.provider.token is not None:
             client = EvernoteClient(
-                token=trigger.token, sandbox=settings.TH_EVERNOTE['sandbox'])
+                token=trigger.provider.token, sandbox=settings.TH_EVERNOTE['sandbox'])
 
             # get the data from the last time the trigger has been started
             # the filter will use the DateTime format in standard
-            data = client.findNotesMetadata(
-                filter='created:' + trigger.date_triggered)
+            note_store = client.get_note_store()
+            note_filter = NoteMetadata(created=date_triggered)
+            data = note_store.findNotesMetadata(
+                trigger.provider.token, note_filter, None, None, None)
 
         return data
 
