@@ -10,7 +10,7 @@ from th_evernote.models import Evernote
 from th_evernote.sanitize import sanitize
 # evernote classes
 from evernote.api.client import EvernoteClient
-from evernote.edam.notestore.ttypes import NoteMetadata
+from evernote.edam.notestore.ttypes import NoteMetadata, NoteFilter
 import evernote.edam.type.ttypes as Types
 # django classes
 from django.conf import settings
@@ -36,28 +36,24 @@ logger = getLogger('django_th.trigger_happy')
 
 class ServiceEvernote(ServicesMgr):
 
-    def process_data(self, trigger_id):
+    def process_data(self, token, trigger_id, date_triggered):
         """
             get the data from the service
         """
-
-        trigger = TriggerService.objects.get(id=trigger_id)
-
-        date_triggered = int(time.mktime(
-            datetime.datetime.timetuple(trigger.date_triggered)))
-
         data = {}
 
-        if trigger.provider.token is not None:
+        if token is not None:
+
             client = EvernoteClient(
-                token=trigger.provider.token, sandbox=settings.TH_EVERNOTE['sandbox'])
+                token=token, sandbox=settings.TH_EVERNOTE['sandbox'])
 
             # get the data from the last time the trigger has been started
             # the filter will use the DateTime format in standard
+            # @TOFIX
+            my_filter = 'created:'+str(date_triggered)
             note_store = client.get_note_store()
-            note_filter = NoteMetadata(created=date_triggered)
             data = note_store.findNotesMetadata(
-                trigger.provider.token, note_filter, None, None, None)
+                token, NoteFilter(words=my_filter), None, None, None)
 
         return data
 
@@ -75,7 +71,10 @@ class ServiceEvernote(ServicesMgr):
         elif 'description' in data:
             content = data.description
 
-        if token and len(data['title']):
+        # if no title provided, fallback to the URL which should be provided
+        # by any exiting service
+        title = ( data['title'] if 'title' in data else data['link'])
+        if token and len(title):
             # get the evernote data of this trigger
             trigger = Evernote.objects.get(trigger_id=trigger_id)
 
@@ -146,7 +145,7 @@ class ServiceEvernote(ServicesMgr):
 
             # start to build the "note"
             # the title
-            note.title = data['title'].encode('utf-8', 'xmlcharrefreplace')
+            note.title = title.encode('utf-8', 'xmlcharrefreplace')
             # the body
             note.content = '<?xml version="1.0" encoding="UTF-8"?>'
             note.content += '<!DOCTYPE en-note SYSTEM "http://xml.evernote.com/pub/enml2.dtd">'
@@ -160,8 +159,7 @@ class ServiceEvernote(ServicesMgr):
 
         else:
             logger.critical(
-                "no token provided for trigger ID %s and title %s", trigger_id,
-                data['title'])
+                "no token provided for trigger ID %s and title %s", trigger_id, title)
 
     def get_evernote_client(self, token=None):
         """
