@@ -5,20 +5,21 @@ from django.utils.translation import ugettext as _
 
 # django_th classes
 from django_th.services.services import ServicesMgr
-from django_th.models import UserService, ServicesActivated, TriggerService
+from django_th.models import UserService, ServicesActivated
 from th_evernote.models import Evernote
 from th_evernote.sanitize import sanitize
 # evernote classes
 from evernote.api.client import EvernoteClient
-from evernote.edam.notestore.ttypes import NoteMetadata, NoteFilter
+from evernote.edam.notestore import NoteStore
 import evernote.edam.type.ttypes as Types
 # django classes
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.utils.log import getLogger
 
-import datetime
-import time
+
+import arrow
+
 """
     handle process with evernote
     put the following in settings.py
@@ -40,20 +41,45 @@ class ServiceEvernote(ServicesMgr):
         """
             get the data from the service
         """
-        data = {}
+        data = []
 
         if token is not None:
-
             client = EvernoteClient(
                 token=token, sandbox=settings.TH_EVERNOTE['sandbox'])
 
+            note_store = client.get_note_store()
+
             # get the data from the last time the trigger has been started
             # the filter will use the DateTime format in standard
-            # @TOFIX
-            my_filter = 'created:'+str(date_triggered)
-            note_store = client.get_note_store()
-            data = note_store.findNotesMetadata(
-                token, NoteFilter(words=my_filter), None, None, None)
+            new_date_triggered = arrow.get(
+                str(date_triggered), 'YYYYMMDDTHHmmss')
+
+            new_date_triggered = str(new_date_triggered).replace(
+                ':', '').replace('-', '')
+
+            date_filter = "created:{}".format(new_date_triggered[:-6])
+
+            # filter
+            my_filter = NoteStore.NoteFilter()
+            my_filter.words = date_filter
+
+            # result spec to tell to evernote
+            # what information to include in the response
+            spec = NoteStore.NotesMetadataResultSpec()
+            spec.includeTitle = True
+            spec.includeAttributes = True
+
+            our_note_list = note_store.findNotesMetadata(
+                token, my_filter, 0, 100, spec)
+
+            whole_note = ''
+            for note in our_note_list.notes:
+                whole_note = note_store.getNote(
+                    token, note.guid, True, False, False, False)
+                data.append(
+                    {'title': note.title,
+                     'link': whole_note.attributes.sourceURL,
+                     'content': whole_note.content})
 
         return data
 
@@ -61,7 +87,7 @@ class ServiceEvernote(ServicesMgr):
         """
             let's save the data
             dont want to handle empty title nor content
-            otherwise this will produce an Exception by 
+            otherwise this will produce an Exception by
             the Evernote's API
         """
         content = ''
@@ -73,7 +99,8 @@ class ServiceEvernote(ServicesMgr):
 
         # if no title provided, fallback to the URL which should be provided
         # by any exiting service
-        title = ( data['title'] if 'title' in data else data['link'])
+        # @todo : need to check date['link'] ??
+        title = (data['title'] if 'title' in data else data['link'])
         if token and len(title):
             # get the evernote data of this trigger
             trigger = Evernote.objects.get(trigger_id=trigger_id)
@@ -139,8 +166,7 @@ class ServiceEvernote(ServicesMgr):
                 provided_by = _('Provided by')
                 provided_from = _('from')
                 footer = "<br/><br/>{} <em>{}</em> {} <a href='{}'>{}</a>".format(
-                    provided_by, trigger.trigger.description,
-                    provided_from, data['link'], data['link'])
+                    provided_by, trigger.trigger.description, provided_from, data['link'], data['link'])
                 content += footer
 
             # start to build the "note"
