@@ -2,5 +2,5 @@ django_th==0.8.0
 evernote==1.25.0
 httplib2==0.8
 oauth2==1.5.211
-South==0.8.2
 pytidylib==0.2.1
+arrow==0.4.2
