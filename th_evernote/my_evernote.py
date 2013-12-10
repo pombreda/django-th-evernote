@@ -93,9 +93,9 @@ class ServiceEvernote(ServicesMgr):
         content = ''
 
         if 'content' in data:
-            content = data.content[0].value
+            content = data['content']
         elif 'description' in data:
-            content = data.description
+            content = data['description']
 
         # if no title provided, fallback to the URL which should be provided
         # by any exiting service
