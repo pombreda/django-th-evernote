@@ -93,16 +93,28 @@ class ServiceEvernote(ServicesMgr):
         content = ''
 
         if 'content' in data:
-            # rss case
             if type(data['content']) is list:
                 if 'value' in data['content'][0]:
                     content = data['content'][0].value
-            # others
             else:
-                content = data['content']
+                if 'value' in data['content']:
+                    content = data['content']['value']
+                else:
+                    content = data['content']
+
+        elif 'summary_detail' in data:
+            if type(data['summary_detail']) is list:
+                if 'value' in data['summary_detail'][0]:
+                    content = data['summary_detail'][0].value
+            else:
+                if 'value' in data['summary_detail']:
+                    content = data['summary_detail']['value']
+                else:
+                    content = data['summary_detail']
 
         elif 'description' in data:
             content = data['description']
+
 
         # if no title provided, fallback to the URL which should be provided
         # by any exiting service
