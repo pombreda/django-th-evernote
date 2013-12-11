@@ -93,7 +93,14 @@ class ServiceEvernote(ServicesMgr):
         content = ''
 
         if 'content' in data:
-            content = data['content']
+            # rss case
+            if type(data['content']) is list:
+                if 'value' in data['content'][0]:
+                    content = data['content'][0].value
+            # others
+            else:
+                content = data['content']
+
         elif 'description' in data:
             content = data['description']
 
