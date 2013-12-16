@@ -115,10 +115,8 @@ class ServiceEvernote(ServicesMgr):
         elif 'description' in data:
             content = data['description']
 
-
         # if no title provided, fallback to the URL which should be provided
         # by any exiting service
-        # @todo : need to check date['link'] ??
         title = (data['title'] if 'title' in data else data['link'])
         if token and len(title):
             # get the evernote data of this trigger
