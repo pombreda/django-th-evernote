@@ -1,6 +1,17 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import arrow
+
+# evernote classes
+from evernote.api.client import EvernoteClient
+from evernote.edam.notestore import NoteStore
+import evernote.edam.type.ttypes as Types
+
+# django classes
+from django.conf import settings
+from django.core.urlresolvers import reverse
+from django.utils.log import getLogger
 from django.utils.translation import ugettext as _
 
 # django_th classes
@@ -8,17 +19,7 @@ from django_th.services.services import ServicesMgr
 from django_th.models import UserService, ServicesActivated
 from th_evernote.models import Evernote
 from th_evernote.sanitize import sanitize
-# evernote classes
-from evernote.api.client import EvernoteClient
-from evernote.edam.notestore import NoteStore
-import evernote.edam.type.ttypes as Types
-# django classes
-from django.conf import settings
-from django.core.urlresolvers import reverse
-from django.utils.log import getLogger
 
-
-import arrow
 
 """
     handle process with evernote
@@ -56,7 +57,6 @@ class ServiceEvernote(ServicesMgr):
 
             new_date_triggered = str(new_date_triggered).replace(
                 ':', '').replace('-', '')
-
             date_filter = "created:{}".format(new_date_triggered[:-6])
 
             # filter
@@ -221,11 +221,6 @@ class ServiceEvernote(ServicesMgr):
     def auth(self, request):
         """
             let's auth the user to the Service
-
-            @todo : manage the user token to see if a token already exist
-            smthg like request.user.token with
-            client = self.get_evernote_client(request.user.token)
-            this will avoid to request a new token
         """
         client = self.get_evernote_client()
         callbackUrl = 'http://%s%s' % (
@@ -266,8 +261,5 @@ class ServiceEvernote(ServicesMgr):
             us.save()
         except KeyError:
             return '/'
-
-        # note_store = client.get_note_store()
-        # notebooks = note_store.listNotebooks()
 
         return 'evernote/callback.html'
