@@ -10,7 +10,7 @@ by creating a note on your Evernote account
 
 Requirements :
 ==============
-* django_th: 0.8.1
+* django_th: 0.8.2
 * evernote: 1.25.0
 * httplib2: 0.8
 * pytidylib: 0.2.1

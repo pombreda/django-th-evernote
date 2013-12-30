@@ -14,8 +14,8 @@ install_requires = reqs('requirements.txt')
 setup(
     name='django_th_evernote',
     version=version,
-    description='Django Trigger Happy : Service Evernote to add data in your\
-    evernote notebook from the service of your choice',
+    description='Django Trigger Happy : Service Evernote to read and add data\
+ in your evernote notebook from and to the service of your choice',
     author='Olivier Demah',
     author_email='olivier@foxmask.info',
     url='https://github.com/foxmask/django-th-evernote',
@@ -31,6 +31,6 @@ setup(
         'Programming Language :: Python',
         'Framework :: Django',
     ],
-    install_requires=install_requires,    
+    install_requires=install_requires,
     include_package_data=True,
 )
