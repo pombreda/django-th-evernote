@@ -2,7 +2,7 @@
 Django Trigger Happy : Service Evernote
 =======================================
 
-This service provide a way to (actually) store note from data coming 
+This service provides a way to (actually) store note from data coming
 from a service of your choice (like RSS) from Trigger Happy
 
 for example a new RSS item is published, django-th-evernote will store them 
@@ -10,7 +10,7 @@ by creating a note on your Evernote account
 
 Requirements :
 ==============
-* django_th: 0.8.2
+* django_th: 0.8.3
 * evernote: 1.25.0
 * httplib2: 0.8
 * pytidylib: 0.2.1
@@ -76,7 +76,7 @@ TH_EVERNOTE is the settings you will need to be able to add/read data in/from Ev
         'consumer_secret': 'abcdefghijklmnopqrstuvwxyz',
     }
     
-set sandbox to False in production and provide your consummer_key and consumer_secret you'd requested from http://dev.evernote.com/
+set sandbox to False in production and provide your consumer_key and consumer_secret you'd requested from http://dev.evernote.com/
 
 
 

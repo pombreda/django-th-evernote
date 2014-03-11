@@ -9,13 +9,13 @@ class EvernoteForm(forms.ModelForm):
     """
         for to handle Evernote service
     """
-        
+
     class Meta:
         model = Evernote
         fields = ('tag', 'notebook', )
 
 
-class EvernoteConsummerForm(EvernoteForm):
+class EvernoteConsumerForm(EvernoteForm):
     pass
 
 
