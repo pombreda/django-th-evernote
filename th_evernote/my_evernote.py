@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 
 import arrow
 
-# evernote classes
+# evernote API
 from evernote.api.client import EvernoteClient
 from evernote.edam.notestore import NoteStore
 import evernote.edam.type.ttypes as Types
@@ -20,7 +20,6 @@ from django_th.models import UserService, ServicesActivated
 from th_evernote.models import Evernote
 from th_evernote.sanitize import sanitize
 
-
 """
     handle process with evernote
     put the following in settings.py
@@ -31,6 +30,13 @@ from th_evernote.sanitize import sanitize
         'consumer_secret': 'abcdefghijklmnopqrstuvwxyz',
     }
     sanbox set to True to make your test and False for production purpose
+
+    TH_SERVICES = (
+        ...
+        'th_evernote.my_evernote.ServiceEvernote',
+        ...
+    )
+
 """
 
 logger = getLogger('django_th.trigger_happy')
@@ -182,27 +188,33 @@ class ServiceEvernote(ServicesMgr):
                 # domain.com will be the link and the text of the link
                 provided_by = _('Provided by')
                 provided_from = _('from')
-                footer = "<br/><br/>{} <em>{}</em> {} <a href='{}'>{}</a>".format(
-                    provided_by, trigger.trigger.description, provided_from, data['link'], data['link'])
+                footer_from = "<br/><br/>{} <em>{}</em> {} <a href='{}'>{}</a>"
+                footer = footer_from.format(
+                    provided_by, trigger.trigger.description, provided_from,
+                    data['link'], data['link'])
                 content += footer
 
             # start to build the "note"
             # the title
             note.title = title.encode('utf-8', 'xmlcharrefreplace')
             # the body
-            note.content = '<?xml version="1.0" encoding="UTF-8"?>'
-            note.content += '<!DOCTYPE en-note SYSTEM "http://xml.evernote.com/pub/enml2.dtd">'
+            prolog = '<?xml version="1.0" encoding="UTF-8"?>'
+            prolog += '<!DOCTYPE en-note SYSTEM "http://xml.evernote.com/pub/enml2.dtd">'
+            note.content = prolog
             # tidy and sanitize content
             enml = sanitize(content)
             note.content += enml.encode('ascii', 'xmlcharrefreplace')
             # create the note !
-            created_note = note_store.createNote(note)
-            sentance = str('note %s created') % created_note.guid
-            logger.debug(sentance)
+            try:
+                created_note = note_store.createNote(note)
+                sentance = str('note %s created') % created_note.guid
+                logger.debug(sentance)
+            except Exception, e:
+                logger.critical(e)
 
         else:
-            logger.critical(
-                "no token provided for trigger ID %s and title %s", trigger_id, title)
+            sentence = "no token provided for trigger ID {} and title {}"
+            logger.critical(sentence.format(trigger_id, title))
 
     def get_evernote_client(self, token=None):
         """
