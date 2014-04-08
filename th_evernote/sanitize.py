@@ -25,8 +25,8 @@ def sanitize(html):
 
 def removeProhibitedElements(documentElement):
     """
-To fit the Evernote DTD need, drop this tag name
-"""
+        To fit the Evernote DTD need, drop this tag name
+    """
     prohibitedTagNames = [
         "applet", "base", "basefont", "bgsound", "blink", "button", "dir",
         "embed", "fieldset", "form", "frame", "frameset", "head", "iframe",
@@ -40,8 +40,8 @@ To fit the Evernote DTD need, drop this tag name
 
 def removeProhibitedElement(tagName, documentElement):
     """
-To fit the Evernote DTD need, drop this tag name
-"""
+        To fit the Evernote DTD need, drop this tag name
+    """
     elements = documentElement.getElementsByTagName(tagName)
     for element in elements:
         p = element.parentNode
@@ -50,8 +50,8 @@ To fit the Evernote DTD need, drop this tag name
 
 def removeProhibitedAttributes(element):
     """
-To fit the Evernote DTD need, drop this attribute name
-"""
+        To fit the Evernote DTD need, drop this attribute name
+    """
     prohibitedAttributes = ["id", "class", "onclick", "ondblclick", "onload",
                             "accesskey", "data", "dynsrc", "tabindex",
                             "onmouseover", "onmouseout", "onblur",

@@ -196,20 +196,20 @@ class ServiceEvernote(ServicesMgr):
 
             # start to build the "note"
             # the title
-            note.title = title.encode('utf-8', 'xmlcharrefreplace')
+            note.title = title
             # the body
             prolog = '<?xml version="1.0" encoding="UTF-8"?>'
             prolog += '<!DOCTYPE en-note SYSTEM "http://xml.evernote.com/pub/enml2.dtd">'
             note.content = prolog
             # tidy and sanitize content
             enml = sanitize(content)
-            note.content += enml.encode('ascii', 'xmlcharrefreplace')
+            note.content += str(enml)
             # create the note !
             try:
                 created_note = note_store.createNote(note)
                 sentance = str('note %s created') % created_note.guid
                 logger.debug(sentance)
-            except Exception, e:
+            except Exception as e:
                 logger.critical(e)
 
         else:
