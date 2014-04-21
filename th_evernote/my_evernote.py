@@ -139,7 +139,7 @@ class ServiceEvernote(ServicesMgr):
                 notebooks = note_store.listNotebooks()
                 listtags = note_store.listTags()
                 notebookGuid = 0
-                tagGuid = 0
+                tagGuid = ()
                 # get the notebookGUID ...
                 for notebook in notebooks:
                     if notebook.name.lower() == trigger.notebook.lower():
@@ -147,10 +147,22 @@ class ServiceEvernote(ServicesMgr):
                         break
                 #... and get the tagGUID if a tag has been provided
                 if trigger.tag is not '':
-                    for tag in listtags:
-                        if tag.name.lower() == trigger.tag.lower():
-                            tagGuid = tag.guid
-                            break
+                    # cut the string by piece of tag with comma
+                    if ',' in trigger.tag:
+                        for my_tag in trigger.tag.split(','):
+                            for tag in listtags:
+                                # remove space before and after
+                                # thus we keep "foo bar"
+                                # but not " foo bar" nor "foo bar "
+                                if tag.name.lower() == my_tag.lower().lstrip().rstrip():
+                                    tagGuid.append(tag.guid)
+                                    break
+                    else:
+                        for tag in listtags:
+                            if tag.name.lower() == my_tag.lower():
+                                tagGuid.append(tag.guid)
+                                break
+
                 # notebookGUID does not exist:
                 # create it
                 if notebookGuid == 0:
@@ -170,7 +182,8 @@ class ServiceEvernote(ServicesMgr):
 
                 if trigger.tag is not '':
                     # set the tag to the note if a tag has been provided
-                    note.tagGuids = [tagGuid]
+                    # note.tagGuids = [tagGuid]
+                    note.tagGuids = tagGuid
 
                 logger.debug("notebook that will be used %s", trigger.notebook)
 
