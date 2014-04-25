@@ -139,13 +139,14 @@ class ServiceEvernote(ServicesMgr):
                 notebooks = note_store.listNotebooks()
                 listtags = note_store.listTags()
                 notebookGuid = 0
-                tagGuid = ()
+                tagGuid = []
                 # get the notebookGUID ...
                 for notebook in notebooks:
                     if notebook.name.lower() == trigger.notebook.lower():
                         notebookGuid = notebook.guid
                         break
                 #... and get the tagGUID if a tag has been provided
+
                 if trigger.tag is not '':
                     # cut the string by piece of tag with comma
                     if ',' in trigger.tag:
@@ -182,7 +183,6 @@ class ServiceEvernote(ServicesMgr):
 
                 if trigger.tag is not '':
                     # set the tag to the note if a tag has been provided
-                    # note.tagGuids = [tagGuid]
                     note.tagGuids = tagGuid
 
                 logger.debug("notebook that will be used %s", trigger.notebook)
