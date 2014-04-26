@@ -1,19 +1,13 @@
-=======================================
-Django Trigger Happy : Service Evernote
-=======================================
+==================
+Evernote Connector
+==================
 
-This service provides a way to (actually) store note from data coming
-from a service of your choice (like RSS) from Trigger Happy
-
-for example a new RSS item is published, django-th-evernote will store them 
-by creating a note on your Evernote account
+This connecttor provides an access to your Evernote account from Trigger Happy
 
 Requirements :
 ==============
-* django_th: 0.8.3
+* django_th: 0.9.0
 * evernote: 1.25.0
-* httplib2: 0.8
-* pytidylib: 0.2.1
 
 
 Installation:
@@ -55,7 +49,8 @@ add the module th_evernote to INSTALLED_APPS
 
 TH_SERVICES 
 ~~~~~~~~~~~
-TH_SERVICES is a list of the services use by Trigger Happy
+
+TH_SERVICES is a list of the services used by Trigger Happy
 
 .. code:: python
 

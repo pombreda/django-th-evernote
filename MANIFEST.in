@@ -2,4 +2,5 @@ exclude th_evernote/local_settings.py
 include *.txt *.rst
 recursive-include th_evernote *.html
 recursive-include th_evernote/templates *
-
+recursive-exclude * __pycache__
+recursive-exclude * *.py[co]
