@@ -2,7 +2,7 @@
 Evernote Connector
 ==================
 
-This connecttor provides an access to your Evernote account from Trigger Happy
+From Trigger Happy, this connector provides an access to your Evernote account
 
 Requirements :
 ==============
