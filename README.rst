@@ -6,8 +6,10 @@ From Trigger Happy, this connector provides an access to your Evernote account
 
 Requirements :
 ==============
-* django_th: 0.9.0
-* evernote: 1.25.0
+* django_th 0.9.0
+* pytidylib6 0.2.2
+* arrow 0.4.2
+* evernote from github https://github.com/evernote/evernote-sdk-python3 as the version from pypi does not support python 3
 
 
 Installation:
