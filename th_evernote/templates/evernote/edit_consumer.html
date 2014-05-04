@@ -4,7 +4,7 @@
 {% load i18n %}
 {% block title %}{% trans "My Trigger" %} - {{ user.username }} - {{ current_site.name }}{% endblock %}
 {% block content %}
-    <div class="span12" id="trigger-content">
+    <div class="col-md-12" id="trigger-content">
         <h3>{% trans 'Edition of your trigger' %} {{ context.description }}</h3>
         <form method="post" class="form-horizontal" action="">
         {% csrf_token %}
