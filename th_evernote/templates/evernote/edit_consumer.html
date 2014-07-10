@@ -5,28 +5,35 @@
 {% block title %}{% trans "My Trigger" %} - {{ user.username }} - {{ current_site.name }}{% endblock %}
 {% block content %}
     <div class="col-md-12" id="trigger-content">
-        <h3>{% trans 'Edition of your trigger' %} {{ context.description }}</h3>
+        <h3><span class="glyphicon glyphicon-edit"></span> {% trans 'Edition of your trigger' %} {{ context.description }}</h3>
         <form method="post" class="form-horizontal" action="">
-        {% csrf_token %}
         {{ form.non_field_errors }}
-            <div class="control-group">
-                <label class="control-label" for="id_tag">{% trans 'Tag' %}</label>
-                <div class="controls">
-                {{ form.tag.errors }}
-                {{ form.tag }}
-                </div>
-            </div>        
-            <div class="control-group">
-                <label class="control-label" for="id_notebook">{% trans 'Notebook' %}</label>
-                <div class="controls">
-                {{ form.notebook.errors }}
-                {{ form.notebook }}
+        <fieldset>
+        <legend>{{ context.description }}</legend>
+        {% csrf_token %}
+            <div class="form-group{% if form.tag.errors %} has-error{% endif %}">
+                {% if form.tag.errors %}
+                <div class="col-sm-offset-1 col-sm-10 alert alert-danger" role="alert">{{ form.tag.errors }}</div>
+                {% endif %}
+                <label for="id_tag" class="col-sm-2 control-label">{% trans "Tag" %}</label>
+                <div class="col-sm-10">{{ form.tag }}</div>
+            </div>
+
+            <div class="form-group{% if form.notebook.errors %} has-error{% endif %}">
+                {% if form.notebook.errors %}
+                <div class="col-sm-offset-1 col-sm-10 alert alert-danger" role="alert">{{ form.notebook.errors }}</div>
+                {% endif %}
+                <label for="id_notebook" class="col-sm-2 control-label">{% trans "Notebook" %}</label>
+                <div class="col-sm-10">{{ form.notebook }}</div>
+            </div>
+
+            <div class="form-group form-actions">
+                <div class="col-sm-offset-2 col-sm-4">
+                    <input type="hidden" name="id" value="{{ id }}" />
+                    <button class="btn btn-primary">{% trans "Save it" %}</button>
                 </div>
             </div>
-            <div class="form-actions">
-                <input type="hidden" name="trigger_id" value="{{ trigger_id }}" />
-                <button class="btn btn-primary">{% trans "Save it" %}</button>
-            </div>
+        </fieldset>
         </form>
     </div> 
 {% endblock %}
